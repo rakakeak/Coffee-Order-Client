@@ -49,7 +49,7 @@ class ScreenLogin extends Component {
         backgroundColor:'#f7a56a'
       }]}>
         <View style={[Styles.content, Styles.cardSimpleContainer, {
-          backgroundColor: '#fad88c',
+          backgroundColor: '#fcf4e3',
           width: '100%',
           height: 250,
           justifyContent: 'center',
@@ -63,7 +63,8 @@ class ScreenLogin extends Component {
             borderColor: Color.darkPrimaryColor,
             top: -50,
           }}>
-            <Image source={require('../assets/Icon/logocoffee.jpg')} style={{ width: '100%', height: '100%' }}></Image>
+            <Image source={require('../assets/Icon/logocoffee.jpg')} style={{ width: '100%', height: '100%' , position:'absolute',
+          top: -80, borderRadius:44 }}></Image>
           </View>
           <Text style={[Styles.hurufKonten, {
             fontSize: 18,

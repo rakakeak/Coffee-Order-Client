@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import IconIon from 'react-native-vector-icons/Ionicons'
 import IconFa from 'react-native-vector-icons/FontAwesome5'
 import IconOctic from 'react-native-vector-icons/Octicons'
+import AntDesign from 'react-native-vector-icons/AntDesign'
 
 import Constanta, { convertToRupiah } from '../res/Constant'
 import { Styles, Color } from '../res/Styles'
@@ -220,14 +221,7 @@ class ScreenCart extends Component {
                       height: 100,
                       flex: 1
                     }]}>
-                      <TouchableOpacity
-                        onPress={() => this.aksiRemoveOrderMenus(item.menu.id, this.props.Transaction.dataItem.id)}
-                      >
-                        <IconFa name='minus-circle' color='#0b7f3b' size={24}  style={{
-                          paddingRight: 12,
-                          paddingLeft: 8,
-                        }}></IconFa>
-                      </TouchableOpacity>
+                      
                       <Image source={{ uri: item.menu.image }} style={{
                         width: 100,
                         height: '100%',
@@ -258,14 +252,23 @@ class ScreenCart extends Component {
                           ({convertToRupiah(item.menu.price * item.qty)})</Text>
                       </View>
                       <TouchableOpacity
+                        onPress={() => this.aksiRemoveOrderMenus(item.menu.id, this.props.Transaction.dataItem.id)}
+                      >
+                        <AntDesign name='minuscircleo' color='#0b7f3b' size={24}  style={{
+                          paddingRight: 12,
+                          paddingLeft: 8,
+                        }}></AntDesign>
+                      </TouchableOpacity>
+                      <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{item.qty}</Text>
+                      <TouchableOpacity
                         onPress={() => this.aksiAddOrderMenus(item.menu.id, this.props.Transaction.dataItem.id)}
                       >
-                        <IconFa name='plus-circle' color='#0b7f3b' size={23} style={{
+                        <AntDesign name='pluscircleo' color='#0b7f3b' size={23} style={{
                           paddingRight: 10,
                           paddingLeft: 10
-                        }}></IconFa>
+                        }}></AntDesign>
                       </TouchableOpacity>
-                      <View style={{
+                      {/* <View style={{
                         position: 'absolute',
                         right: -5,
                         top: -15,
@@ -279,7 +282,7 @@ class ScreenCart extends Component {
                         alignItems: 'center'
                       }}>
                         <Text style={{ fontSize: 15, fontWeight: 'bold' }}>{item.qty}</Text>
-                      </View>
+                      </View> */}
                     </View>
                     : false)
               }}
@@ -296,7 +299,8 @@ class ScreenCart extends Component {
                       margin: 5,
                       width: 150,
                       height: 50,
-                      flexDirection: 'row'
+                      flexDirection: 'row',
+                      borderRadius:24
                     }]}
                       onPress={() => {
                         Alert.alert(
@@ -338,7 +342,8 @@ class ScreenCart extends Component {
                       margin: 5,
                       width: 150,
                       height: 50,
-                      flexDirection: 'row'
+                      flexDirection: 'row',
+                      borderRadius:24
                     }]}
                       onPress={() => {
                         this.props.navigation.navigate('ScreenViewbill')

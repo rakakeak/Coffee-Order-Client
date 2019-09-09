@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { View, Text, TouchableOpacity, FlatList, Image, ScrollView, ActivityIndicator, ToastAndroid } from 'react-native'
-import {Header, Right, Left, Title, Body, Tabs, Tab, ScrollableTab } from 'native-base'
+import { Header, Right, Left, Title, Body, Tabs, Tab, ScrollableTab } from 'native-base'
 import IconIon from 'react-native-vector-icons/Ionicons'
 // import IconAntDesign from 'react-native-vector-icons/AntDesign'
 import IconMaterialCom from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -101,7 +101,7 @@ class ScreenHome extends Component {
           price: menuData.data.price,
           qty: 1
         }
-        ToastAndroid.show('Berhasil Menambahkan Order', ToastAndroid.SHORT);
+        ToastAndroid.show('Success Add Order', ToastAndroid.SHORT);
         this.props.dispatch(addOrder(dataJadi))
       } else {
         if (jmlMenuDataByTrans.data.status == null) {
@@ -144,8 +144,8 @@ class ScreenHome extends Component {
   }
 
   componentDidMount() {
-    let timerHandlenya = 
-    this.getNoMeja()
+    let timerHandlenya =
+      this.getNoMeja()
     this.props.dispatch(getMenu())
     this.props.dispatch(getCategory())
     this.props.dispatch(setIntervalNya(
@@ -158,24 +158,24 @@ class ScreenHome extends Component {
   render() {
 
     return (
-      <View style={{flex:1}}>
+      <View style={{ flex: 1 }}>
         {/* Header */}
         <Header hasTabs style={{ backgroundColor: '#fad88c' }}>
-           <Left style={{ flex: 1 }}>
-             <Text style={{ fontWeight: 'bold', color: '#0a0f14' }}>Table :</Text>
-             <Text style={{ fontWeight: 'bold', color: '#0a0f14', fontSize:26 }}> {this.state.noMeja}</Text>
-           </Left>
-           <Body style={{ alignItems: 'center', flex: 1, justifyContent: 'center' }}>
-            <Title style={{  color: '#0a0f14', fontWeight: 'bold' }}>Mr Coffee</Title>
-           </Body>
-         <Right style={{ flex: 1 }}>
-             <Text style={{ fontWeight: 'bold', color: '#0a0f14' }}>{this.props.Home.timerString}</Text>
-           </Right>
+          <Left style={{ flex: 1 }}>
+            <Text style={{ fontWeight: 'bold', color: '#0a0f14' }}>Table :</Text>
+            <Text style={{ fontWeight: 'bold', color: '#0a0f14', fontSize: 26 }}> {this.state.noMeja}</Text>
+          </Left>
+          <Body style={{ alignItems: 'center', flex: 1, justifyContent: 'center' }}>
+            <Title style={{ color: '#0a0f14', fontWeight: 'bold' }}>Mr Coffee</Title>
+          </Body>
+          <Right style={{ flex: 1 }}>
+            <Text style={{ fontWeight: 'bold', color: '#0a0f14' }}>{this.props.Home.timerString}</Text>
+          </Right>
         </Header>
-      
+
 
         {/* List Category */}
-        <View style={[Styles.content,  {
+        <View style={[Styles.content, {
           backgroundColor: '#fcf4e3',
           width: '100%',
           height: 75,
@@ -186,9 +186,10 @@ class ScreenHome extends Component {
           {this.props.Menu.isLoading ?
             <ActivityIndicator></ActivityIndicator>
             :
+
             <FlatList
               horizontal={true}
-              style={{flex:1}}
+              style={{ flex: 1 }}
               showsHorizontalScrollIndicator={false}
               data={this.props.Category.dataItem}
               keyExtractor={(item) => item.id.toString()}
@@ -202,6 +203,91 @@ class ScreenHome extends Component {
           }
         </View>
 
+        {/* Test List Tab View */}
+        {/* <Tabs renderTabBar={() => <ScrollableTab />}>
+          {this.props.Category.dataItem.map((item, index) => (
+            <Tab key={index} heading={item.name}
+              style={{ backgroundColor: '#2a2727' }}
+              tabStyle={{ backgroundColor: '#2a2727' }}
+              textStyle={{ color: '#b77e31' }}
+              activeTabStyle={{ backgroundColor: '#2a2727' }}
+              activeTextStyle={{ color: '#8c512d' }}
+              tabBarUnderlineStyle={{ backgroundColor: '#2a2727' }}>
+              
+              {this.props.Menu.isLoading ?
+              <ActivityIndicator></ActivityIndicator>
+              :
+              <FlatList
+                data={this.props.Menu.dataItem}
+                showsVerticalScrollIndicator={true}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => (
+                  <View style={ {
+                    backgroundColor: Color.whiteColor,
+                    justifyContent: 'flex-start',
+                    alignItems: 'center',
+                    padding: 5,
+                    margin: 5,
+                    height: 100,
+                    flexDirection: 'row',
+                    position: 'relative',
+                    borderWidth: 1,
+                    borderColor: '#075025'
+                  }}>
+
+                    <Image source={{ uri: item.image }} style={{
+                      width: 100,
+                      height: '100%',
+                      marginRight: 20,
+                      borderRadius: 10
+                    }}></Image>
+                    <View style={{ flexDirection: 'column' }}>
+                      <Text style={[Styles.hurufKonten, {
+                        fontSize: 15,
+                        fontWeight: 'bold',
+                        textAlign: 'left'
+                      }]}>
+                        {item.name}</Text>
+                      <Text style={[Styles.hurufKonten, {
+                        fontSize: 17,
+                        fontWeight: 'bold',
+                        textAlign: 'left'
+                      }]}>  
+                        {convertToRupiah(item.price)}</Text>
+                    </View>
+                    <TouchableOpacity style={{
+
+                      alignItems: 'center',
+                      position: 'absolute',
+                      bottom: 32,
+                      right: 10,
+                      flex: 1
+
+                    }}
+                      onPress={() => this.aksiAddOrderMenus(item.id, this.state.idTransaction)}
+                      onLongPress={() => alert('Long Pressed')}
+                    >
+                      <View style={{
+                        backgroundColor: '#0b7f3b',
+                        borderRadius: 10,
+                        width: 88,
+                        height: 28,
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}>
+                        <Text style={{ fontWeight: 'bold', color: 'white' }}>Add </Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              />
+            }
+
+
+            </Tab>
+          ))}
+        </Tabs> */}
+
 
 
         {/* List Menu */}
@@ -212,7 +298,7 @@ class ScreenHome extends Component {
           justifyContent: 'center',
           alignItems: 'flex-start',
           marginBottom: 0,
-          padding:8
+          padding: 8
         }}>
           <View style={{ height: '100%', width: '100%' }}>
             <Text style={[Styles.hurufKonten, {
@@ -233,7 +319,7 @@ class ScreenHome extends Component {
                   <View style={[Styles.cardSimpleContainer, {
                     backgroundColor: Color.whiteColor,
                     justifyContent: 'flex-start',
-                    alignItems: 'center',
+                    // alignItems: 'center',
                     padding: 5,
                     margin: 5,
                     height: 100,
@@ -242,7 +328,7 @@ class ScreenHome extends Component {
                     borderWidth: 1,
                     borderColor: '#075025'
                   }]}>
-                    
+
                     <Image source={{ uri: item.image }} style={{
                       width: 100,
                       height: '100%',
@@ -250,40 +336,42 @@ class ScreenHome extends Component {
                       borderRadius: 10
                     }}></Image>
                     <View style={{ flexDirection: 'column' }}>
+                      <Text style={{
+                        fontSize: 17,
+                        fontWeight: 'bold',
+                        textAlign: 'left',
+
+                      }}>
+                        {item.name}</Text>
                       <Text style={[Styles.hurufKonten, {
                         fontSize: 15,
                         fontWeight: 'bold',
-                        textAlign: 'left'
-                      }]}>
-                        {item.name}</Text>
-                      <Text style={[Styles.hurufKonten, {
-                        fontSize: 17,
-                        fontWeight: 'bold',
-                        textAlign: 'left'
+                        textAlign: 'left',
+                        marginTop: 8
                       }]}>
                         {convertToRupiah(item.price)}</Text>
                     </View>
                     <TouchableOpacity style={{
-      
-                      alignItems:'center',
-                      position:'absolute',
-                      bottom : 32,
-                      right:10,
-                      flex:1
+
+                      alignItems: 'center',
+                      position: 'absolute',
+                      bottom: 32,
+                      right: 10,
+                      flex: 1
 
                     }}
                       onPress={() => this.aksiAddOrderMenus(item.id, this.state.idTransaction)}
                       onLongPress={() => alert('Long Pressed')}
                     >
                       <View style={{
-                        backgroundColor:'#0b7f3b',
-                        borderRadius:10,
-                        width:88,
-                        height:28,
-                        alignItems:'center',
-                        justifyContent:'center'
-                        }}>
-                        <Text style={{fontWeight:'bold', color:'white'}}>Add </Text>
+                        backgroundColor: '#0b7f3b',
+                        borderRadius: 10,
+                        width: 88,
+                        height: 28,
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}>
+                        <Text style={{ fontWeight: 'bold', color: 'white' }}>Add </Text>
                       </View>
                     </TouchableOpacity>
                   </View>
@@ -294,6 +382,7 @@ class ScreenHome extends Component {
         </View>
 
         {/* Option */}
+        {/* if ({this.state.idTransaction > 0 && ( */}
         <View style={{
           backgroundColor: '#fcf4e3',
           width: '100%',
@@ -301,7 +390,7 @@ class ScreenHome extends Component {
           justifyContent: 'flex-start',
           alignItems: 'center',
           flexDirection: 'row',
-          padding:8
+          padding: 8
         }}>
 
           <TouchableOpacity style={[Styles.cardSimpleContainer, {
@@ -309,12 +398,12 @@ class ScreenHome extends Component {
             justifyContent: 'center',
             alignItems: 'center',
             padding: 5,
-            paddingHorizontal:8,
+            paddingHorizontal: 8,
             margin: 5,
             height: '75%',
             flex: 1,
             flexDirection: 'row',
-            borderRadius:24
+            borderRadius: 24
           }]}
             onPress={() => this.aksiListOrder()}
           >
@@ -335,7 +424,7 @@ class ScreenHome extends Component {
             margin: 5,
             height: 60,
             width: 60,
-            borderRadius:60,
+            borderRadius: 60,
             flexDirection: 'row'
           }}
             onPress={() => this.props.navigation.navigate('SWScreenViewbill')}
@@ -350,6 +439,7 @@ class ScreenHome extends Component {
           </TouchableOpacity>
 
         </View>
+        {/* )} */}
       </View>
     )
   }

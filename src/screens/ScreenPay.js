@@ -8,6 +8,7 @@ import { hapusInterval } from '../_actions/Home'
 import { Styles, Color } from '../res/Styles'
 import AsyncStorage from '@react-native-community/async-storage';
 import { getTransaction, editTransaction } from '../_actions/Transaction'
+import { Button } from 'native-base'
 
 class ScreenPay extends Component {
   state = {
@@ -38,17 +39,18 @@ class ScreenPay extends Component {
       <View style={[Styles.container, {
         justifyContent: 'flex-start',
         alignItems: 'center',
-        padding: 10
+        
       }]}>
         <ScrollView style={{
           width: '100%'
         }}>
-          <View style={[Styles.content, Styles.cardSimpleContainer, {
-            backgroundColor: Color.whiteColor,
+          <View style={[Styles.content,{
+            backgroundColor: '#fcf4e3',
             width: '100%',
             height: '100%',
             justifyContent: 'flex-start',
-            alignItems: 'center'
+            alignItems: 'center',
+            flex:1
           }]}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
               <TouchableOpacity
@@ -73,7 +75,7 @@ class ScreenPay extends Component {
                 borderBottomColor: Color.darkPrimaryColor,
                 borderBottomWidth: 2,
                 width: '100%',
-                marginVertical: 5
+                marginVertical: 5,
               }}
             />
             <View style={{
@@ -85,16 +87,17 @@ class ScreenPay extends Component {
               <Image
                 source={require('../assets/Illustrator/receptionist.png')}
                 style={{
-                  width: 250,
-                  height: 250
+                  width: 360,
+                  height: 300
                 }}
               ></Image>
               <Text style={[Styles.hurufKonten, {
                 fontSize: 20,
                 fontWeight: 'bold',
-                marginBottom: 10
+                marginBottom: 10,
+                textAlign:'center'
               }]}>
-                PLEASE BRING THE IPAD TO THE CASHIER
+                PLEASE BRING THE PHONE TO THE CASHIER
               </Text>
               <Text style={[Styles.hurufKonten, {
                 fontSize: 17,
@@ -145,6 +148,19 @@ class ScreenPay extends Component {
               }]}>
                 {this.props.Home.timerString}
               </Text>
+
+              <Button style={{
+                backgroundColor:'#0b7f3b', 
+                marginTop:34, 
+                marginBottom:31, 
+                width:'100%', 
+                justifyContent:'center',
+                borderRadius:24,
+                marginVertical:8}} 
+                onPress={() => this.props.navigation.navigate('ScreenAuth')}
+                >
+                <Text style={{color:'white', fontWeight:'bold', fontSize:16}}>Back To Home</Text>
+              </Button>
             </View>
           </View>
         </ScrollView>

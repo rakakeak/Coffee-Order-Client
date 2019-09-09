@@ -222,13 +222,14 @@ class ScreenViewbill extends Component {
                 </TouchableOpacity>
                 :
                 <TouchableOpacity style={[Styles.cardSimpleContainer, {
-                  backgroundColor: Color.errorColor,
+                  backgroundColor: '#0a0f14',
                   justifyContent: 'flex-start',
                   alignItems: 'center',
                   padding: 5,
                   margin: 5,
                   height: '100%',
-                  flexDirection: 'row'
+                  flexDirection: 'row',
+                  borderRadius:24
                 }]}
                   onPress={() => this.props.navigation.navigate('SWScreenCart')}
                 >
@@ -236,7 +237,8 @@ class ScreenViewbill extends Component {
                     fontSize: 15,
                     fontWeight: 'bold',
                     textAlign: 'center',
-                    color: Color.whiteColor
+                    color: Color.whiteColor,
+                    width:'100%'
                   }]}>
                     CONFIRM FIRST BEFORE CALL BILL
                 </Text>
@@ -252,7 +254,7 @@ class ScreenViewbill extends Component {
             :
             //Jika Tidak ada Sama sekali Orderan
             <View style={[Styles.content, Styles.cardSimpleContainer, {
-              backgroundColor: Color.whiteColor,
+              backgroundColor: '#fcf4e3',
               width: '100%',
               height: '100%',
               justifyContent: 'flex-start',
@@ -301,8 +303,9 @@ class ScreenViewbill extends Component {
                 <Image
                   source={require('../assets/Illustrator/unknown.png')}
                   style={{
-                    width: 150,
-                    height: 200
+                    width: '100%',
+                    height: 200,
+                    
                   }}
                 ></Image>
                 <Text style={[Styles.hurufKonten, {

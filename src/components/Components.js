@@ -15,7 +15,7 @@ export const CosEdit = (props) => {
         <Text style={[Styles.hurufKonten, { fontWeight: 'bold', marginRight: 5 }]}>{props.label}</Text>
         : false}
       <TextInput style={[{
-        backgroundColor: '#015045' ,
+        backgroundColor: '#0b7f3b' ,
         color: 'white',
         fontSize: 16,
         width: '100%',
@@ -44,7 +44,7 @@ export const CosButton = (props) => {
   return (
     <View >
       <Button style={{
-        backgroundColor: '#015045',
+        backgroundColor: '#0b7f3b',
         width:'100%', 
         justifyContent:'center',
         borderRadius: 24
