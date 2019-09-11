@@ -15,10 +15,13 @@ export const CosEdit = (props) => {
         <Text style={[Styles.hurufKonten, { fontWeight: 'bold', marginRight: 5 }]}>{props.label}</Text>
         : false}
       <TextInput style={[{
-        backgroundColor: '#0b7f3b' ,
+        backgroundColor: 'transparent',
+        borderWidth:1,
+        borderColor:'white',
         color: 'white',
         fontSize: 16,
-        width: '100%',
+        width: '120%',
+        // textAlign:'center',
         shadowColor: '#000000',
         shadowOffset: {
           height: 3,

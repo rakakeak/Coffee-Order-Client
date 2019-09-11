@@ -1,17 +1,20 @@
 import React from 'react'
-import { createStackNavigator } from 'react-navigation'
+import { createSwitchNavigator } from 'react-navigation'
 // import { createBottomTabNavigator } from "react-navigation"
 // import IconFa from 'react-native-vector-icons/FontAwesome5'
 
 // import { Styles, Color } from '../res/Styles'
 // import ScreenHome from '../app/home/ScreenHome'
 import ScreenAuth from '../screens/ScreenAuth'
+import IntroScreen from '../screens/IntroScreen'
 
-export default StackPublic = createStackNavigator(
+export default StackPublic = createSwitchNavigator(
   {
+    IntroScreen: IntroScreen,
     ScreenAuth:ScreenAuth
-  }, {
-    initialRouteName: "ScreenAuth",
+  }, 
+  {
+    initialRouteName: "IntroScreen",
     headerMode: 'none'
   }
 );

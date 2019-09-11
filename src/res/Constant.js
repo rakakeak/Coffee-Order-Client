@@ -1,5 +1,6 @@
 export default Constant = {
     host:'http://192.168.0.35:5000/api/v1'
+    // host : 'https://coffee-keak.herokuapp.com/api/v1'
   }
   export const convertToRupiah = (angka) => {
     let rupiah = '';

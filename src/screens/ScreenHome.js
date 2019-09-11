@@ -101,7 +101,8 @@ class ScreenHome extends Component {
           price: menuData.data.price,
           qty: 1
         }
-        ToastAndroid.show('Success Add Order', ToastAndroid.SHORT);
+        ToastAndroid.showWithGravity('Success Add Order', ToastAndroid.SHORT,
+        ToastAndroid.CENTER);
         this.props.dispatch(addOrder(dataJadi))
       } else {
         if (jmlMenuDataByTrans.data.status == null) {
@@ -113,11 +114,13 @@ class ScreenHome extends Component {
           const dataJadi = {
             qty: jmlDataNya
           }
-          ToastAndroid.show(`Berhasil Menambahkan Order , Jumlah : ${jmlDataNya}`, ToastAndroid.SHORT);
+          ToastAndroid.showWithGravity(`Berhasil Menambahkan Order , Jumlah : ${jmlDataNya}`, ToastAndroid.SHORT,
+          ToastAndroid.CENTER);
           this.props.dispatch(editOrder(idOrderNya, dataJadi))
         } else {
           //Data sudah di confirm
-          ToastAndroid.show(`Data sudah terkonfirmasi , Silakan Tunggu Pesanan Anda`, ToastAndroid.SHORT);
+          ToastAndroid.showWithGravity(`Data sudah terkonfirmasi , Silakan Tunggu Pesanan Anda`, ToastAndroid.SHORT,
+          ToastAndroid.CENTER);
         }
       }
     } else {
@@ -153,16 +156,18 @@ class ScreenHome extends Component {
         this.props.dispatch(counterNya(this.props.Home.timer))
       }, 1000)
     ))
+    console.log(this.props.Category.dataItem)
     // this.cekIsStartedMenus()
   }
   render() {
+    console.log(this.props.Category.dataItem)
 
     return (
       <View style={{ flex: 1 }}>
         {/* Header */}
-        <Header hasTabs style={{ backgroundColor: '#fad88c' }}>
+        <Header hasTabs style={{ backgroundColor: '#f3cea2' }}>
           <Left style={{ flex: 1 }}>
-            <Text style={{ fontWeight: 'bold', color: '#0a0f14' }}>Table :</Text>
+            <Text style={{ fontWeight: 'bold', color: '#0a0f14' , marginTop:6, marginLeft:4}}>Table :</Text>
             <Text style={{ fontWeight: 'bold', color: '#0a0f14', fontSize: 26 }}> {this.state.noMeja}</Text>
           </Left>
           <Body style={{ alignItems: 'center', flex: 1, justifyContent: 'center' }}>
@@ -175,7 +180,7 @@ class ScreenHome extends Component {
 
 
         {/* List Category */}
-        <View style={[Styles.content, {
+        {/* <View style={[Styles.content, {
           backgroundColor: '#fcf4e3',
           width: '100%',
           height: 75,
@@ -201,18 +206,25 @@ class ScreenHome extends Component {
               )}
             />
           }
-        </View>
+        </View> */}
+
+        {/* {this.props.Category.dataItem.map((item))} */}
 
         {/* Test List Tab View */}
-        {/* <Tabs renderTabBar={() => <ScrollableTab />}>
-          {this.props.Category.dataItem.map((item, index) => (
-            <Tab key={index} heading={item.name}
-              style={{ backgroundColor: '#2a2727' }}
-              tabStyle={{ backgroundColor: '#2a2727' }}
-              textStyle={{ color: '#b77e31' }}
-              activeTabStyle={{ backgroundColor: '#2a2727' }}
-              activeTextStyle={{ color: '#8c512d' }}
-              tabBarUnderlineStyle={{ backgroundColor: '#2a2727' }}>
+        <Tabs tabBarUnderlineStyle={{backgroundColor:'#0b7f3b', flex:1}} renderTabBar={() => <ScrollableTab style={{backgroundColor:'#f3cea2'}}/>} onChangeTab={({ ref }) => this.aksiCategoryMenus(ref.props.keyExtractor,ref.props.heading)}>
+          
+          {!this.props.Category.isLoading && this.props.Category.dataItem.map((item, index) => (
+            <Tab keyExtractor={item.id} heading={item.name}
+              style={{ backgroundColor: '#fcf4e3' }}
+              tabStyle={{ backgroundColor: '#f3cea2', justifyContent:'center', margin:0 , flex:1}}
+              textStyle={{ color: 'black', textAlign:'center' }}
+              activeTabStyle={{ backgroundColor: '#f3cea2', justifyContent:'center', flex:1, alignItems:'center' }}
+              activeTextStyle={{ color: 'black', fontWeight:'bold' , textAlign:'center', justifyContent:'center', }}
+    
+              >
+                <View style={{backgroundColor:'transparent'}}>
+                  <Text style={{fontWeight:'bold', fontSize:16, textAlign:'center', marginVertical:5}}>Choose Your Coffee</Text>
+                </View>
               
               {this.props.Menu.isLoading ?
               <ActivityIndicator></ActivityIndicator>
@@ -227,12 +239,14 @@ class ScreenHome extends Component {
                     justifyContent: 'flex-start',
                     alignItems: 'center',
                     padding: 5,
-                    margin: 5,
+                    marginTop: 10,
+                    marginHorizontal:5,
                     height: 100,
                     flexDirection: 'row',
                     position: 'relative',
                     borderWidth: 1,
-                    borderColor: '#075025'
+                    borderColor: '#075025',
+                    
                   }}>
 
                     <Image source={{ uri: item.image }} style={{
@@ -286,12 +300,12 @@ class ScreenHome extends Component {
 
             </Tab>
           ))}
-        </Tabs> */}
+        </Tabs>
 
 
 
         {/* List Menu */}
-        <View style={{
+        {/* <View style={{
           backgroundColor: '#fcf4e3',
           width: '100%',
           flex: 7,
@@ -379,18 +393,18 @@ class ScreenHome extends Component {
               />
             }
           </View>
-        </View>
+        </View> */}
 
         {/* Option */}
-        {/* if ({this.state.idTransaction > 0 && ( */}
+        {this.props.Order.dataItem && (
         <View style={{
           backgroundColor: '#fcf4e3',
           width: '100%',
-          flex: 1,
+          flex: 0,
           justifyContent: 'flex-start',
           alignItems: 'center',
           flexDirection: 'row',
-          padding: 8
+          padding: 0
         }}>
 
           <TouchableOpacity style={[Styles.cardSimpleContainer, {
@@ -400,6 +414,7 @@ class ScreenHome extends Component {
             padding: 5,
             paddingHorizontal: 8,
             margin: 5,
+            marginLeft:13,
             height: '75%',
             flex: 1,
             flexDirection: 'row',
@@ -422,6 +437,7 @@ class ScreenHome extends Component {
             alignItems: 'center',
             padding: 5,
             margin: 5,
+            marginRight:13,
             height: 60,
             width: 60,
             borderRadius: 60,
@@ -439,7 +455,7 @@ class ScreenHome extends Component {
           </TouchableOpacity>
 
         </View>
-        {/* )} */}
+         )}
       </View>
     )
   }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, Button, Image, ActivityIndicator } from 'react-native'
+import { View, Text, Button, Image, ActivityIndicator, ImageBackground } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage';
 import { connect } from 'react-redux'
 
@@ -42,26 +42,29 @@ class ScreenLogin extends Component {
   }
   render() {
     return (
-      <View style={[Styles.container, {
+      <ImageBackground style={[Styles.container, {
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 10,
+        padding: 16,
         backgroundColor:'#f7a56a'
-      }]}>
+      }]} source={require('../assets/Photo/background.jpeg')}>
         <View style={[Styles.content, Styles.cardSimpleContainer, {
-          backgroundColor: '#fcf4e3',
+          backgroundColor: 'transparent',
           width: '100%',
           height: 250,
           justifyContent: 'center',
           alignItems: 'center',
-          position: 'relative'
+          position: 'relative',
+          borderWidth:1,
+          borderColor:'white',
+          borderRadius:24
         }]}>
           <View style={{
             position: 'absolute',
             width: 100,
             height: 100,
             borderColor: Color.darkPrimaryColor,
-            top: -50,
+            top: 20,
           }}>
             <Image source={require('../assets/Icon/logocoffee.jpg')} style={{ width: '100%', height: '100%' , position:'absolute',
           top: -80, borderRadius:44 }}></Image>
@@ -69,10 +72,11 @@ class ScreenLogin extends Component {
           <Text style={[Styles.hurufKonten, {
             fontSize: 18,
             fontWeight: 'bold',
+            color:'white'
           }]}>Please enter table number </Text>
-          <View style={{ width: '50%', marginTop: 10 }}>
+          <View style={{ width: '50%', marginTop: 10, }}>
             <CosEdit
-              placeholder='Enter table '
+              placeholder='Enter table'
               keyboardType='numeric'
               onChangeText={this.aksiChangeText}
             />
@@ -90,7 +94,7 @@ class ScreenLogin extends Component {
           </View>
 
         </View>
-      </View>
+      </ImageBackground>
     )
   }
 }
