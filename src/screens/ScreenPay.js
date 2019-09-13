@@ -54,17 +54,17 @@ class ScreenPay extends Component {
         <View style={[Styles.container, {
           justifyContent: 'flex-start',
           alignItems: 'center',
-          padding: wp(3.5)
+          padding: 0
         }]}>
           <ScrollView style={{
             width: wp(100)
           }}>
             <View style={[Styles.content, Styles.cardSimpleContainer, {
-              backgroundColor: Color.whiteColor,
+              backgroundColor: '#fcf4e3',
               width: wp(100),
               height: hp(100),
               justifyContent: 'flex-start',
-              alignItems: 'center'
+              alignItems: 'center',
             }]}>
               <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
                 <Text style={[Styles.hurufKonten, {
@@ -82,8 +82,8 @@ class ScreenPay extends Component {
                 style={{
                   borderBottomColor: Color.darkPrimaryColor,
                   borderBottomWidth: 2,
-                  width: wp(100),
-                  marginVertical: hp(0.5)
+                  width: wp(95),
+                  marginVertical: wp(1.4)
                 }}
               />
               <View style={{
@@ -95,17 +95,19 @@ class ScreenPay extends Component {
                 <Image
                   source={require('../assets/Illustrator/receptionist.png')}
                   style={{
-                    width: wp(20),
-                    height: hp(20)
+                    width: 200,
+                    height: 150,
+                    position: 'absolute',
+                    top: 50
                   }}
                 ></Image>
                 <Text style={[Styles.hurufKonten, {
-                  fontSize: wp(4),
+                  fontSize: wp(3.8),
                   fontWeight: 'bold',
                   marginBottom: wp(3),
                   textAlign: 'center'
                 }]}>
-                  PLEASE BRING THE IPAD TO THE CASHIER
+                  PLEASE BRING THE PHONE TO THE CASHIER
               </Text>
                 <Text style={[Styles.hurufKonten, {
                   fontSize: wp(3.5),
@@ -119,17 +121,17 @@ class ScreenPay extends Component {
                   fontSize: wp(5.2),
                   fontWeight: 'bold',
                   marginTop: wp(5),
-                  marginBottom: wp(3.5)
+                  marginBottom: wp(1.5)
                 }]}>
                   # {this.state.noMeja}
                 </Text>
-                <Text style={[Styles.hurufKonten, {
+                {/* <Text style={[Styles.hurufKonten, {
                   fontSize: wp(4),
                   fontWeight: 'bold',
                   marginBottom: 5
                 }]}>
                   With Transaction ID : {this.state.idTransaction}
-                </Text>
+                </Text> */}
                 <Text style={[Styles.hurufKonten, {
                   fontSize: wp(4),
                   fontWeight: 'bold',
@@ -137,12 +139,12 @@ class ScreenPay extends Component {
                 }]}>
                   Thank you
               </Text>
-                <Text style={[Styles.hurufKonten, {
+                {/* <Text style={[Styles.hurufKonten, {
                   fontSize: wp(4),
                   fontWeight: 'bold',
                 }]}>
                   Time Spent
-              </Text>
+              </Text> */}
                 <Text style={[Styles.hurufKonten, {
                   fontWeight: 'bold',
                 }]}>
@@ -150,8 +152,9 @@ class ScreenPay extends Component {
                 </Text>
                 <TouchableOpacity style={[Styles.cardSimpleContainer, {
                   backgroundColor: Color.darkPrimaryColor,
-                  width: wp(20),
+                  width: wp(50),
                   height: hp(6),
+                  borderRadius: 18,
                   justifyContent: 'center',
                   padding: wp(3),
                   marginTop: wp(3)
@@ -160,8 +163,27 @@ class ScreenPay extends Component {
                 >
                   <Text style={[Styles.hurufKonten, {
                     textAlign: 'center',
-                    color: Color.whiteColor
+                    color: Color.whiteColor,
+                    fontWeight:'bold'
                   }]}> DONE </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={[Styles.cardSimpleContainer, {
+                  backgroundColor: Color.darkPrimaryColor,
+                  width: wp(50),
+                  height: hp(6),
+                  borderRadius: 18,
+                  justifyContent: 'center',
+                  padding: wp(3),
+                  marginTop: wp(3)
+                }]}
+                  onPress={() => this.props.navigation.navigate('ScreenAuth')}
+                >
+                  <Text style={[Styles.hurufKonten, {
+                    textAlign: 'center',
+                    color: Color.whiteColor,
+                    fontWeight:'bold'
+                  }]}>BACK TO HOME</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -184,7 +206,8 @@ class ScreenPay extends Component {
 const mapStateToProps = (state) => {
   return {
     Home: state.Home,
-    Timer: state.Timer
+    Timer: state.Timer,
+    // Transaction : state.Transaction
   }
 }
 export default connect(mapStateToProps)(ScreenPay)

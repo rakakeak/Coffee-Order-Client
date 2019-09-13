@@ -224,7 +224,7 @@ class ScreenViewbill extends Component {
                 marginBottom: wp(0.5),
                 flex: 1
               }]}>
-                Billing </Text>
+                List Order </Text>
               <Text style={[Styles.hurufKonten, {
                 fontWeight: 'bold',
                 textAlign: 'center',

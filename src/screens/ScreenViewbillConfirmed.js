@@ -47,6 +47,8 @@ class ScreenViewbillConfirmed extends Component {
       item.status = true
       dataOrderKirim.push(item)
     })
+
+    console.log('tes: ', tmpMantap)
     // Kirim datanya dataOrderKirim
     await this.props.dispatch(addOrder(tmpMantap))
     let dataTransKirim = {
@@ -144,7 +146,7 @@ class ScreenViewbillConfirmed extends Component {
   handleBackPress = () => {
     // BackHandler.exitApp()
     // Navigate ke pay bill
-    alert(`Please wait your menu and Call the bill`)
+    alert(`Please wait your coffee and Call the bill`)
     return true
   }
   componentDidMount() {
@@ -187,8 +189,8 @@ class ScreenViewbillConfirmed extends Component {
             style={{
               borderBottomColor: Color.darkPrimaryColor,
               borderBottomWidth: 2,
-              width: '100%',
-              marginVertical: 5
+              width: wp(95),
+              marginVertical: wp(1.4)
             }}
           />
 
@@ -256,10 +258,12 @@ class ScreenViewbillConfirmed extends Component {
 
 
           {/* Divider */}
-          <View style={{ marginHorizontal:8,borderTopWidth: 1, borderBottomWidth: 1, width: '99%', borderColor: '#0b7f3b', marginBottom:3,  paddingHorizontal:6 , paddingVertical:4}}>
-            <Text style={{ fontWeight: 'bold', fontSize:16 }}>Note: </Text>
-            <Text style={{fontSize:14}}>Please Wait Your Drink</Text>
-            <Text style={{fontSize:14}}>Please Click Send if Order Comming and Enjoy</Text>
+          <View style={{ marginHorizontal: 8, borderTopWidth: 1, borderBottomWidth: 1, width: '99%', borderColor: '#0b7f3b', marginBottom: 3, paddingHorizontal: 6, paddingVertical: 4 }}>
+            <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Note: </Text>
+            <Text style={{ fontSize: 14, color: '#e9635e' }}>Please wait for your coffee</Text>
+            <Text style={{ fontSize: 14, color: '#e9635e' }}>please click sent if your order has arrived</Text>
+            <Text style={{ fontSize: 14, color: '#e9635e' }}>Thank you and Enjoy your coffee</Text>
+
           </View>
 
           <View
@@ -306,13 +310,16 @@ class ScreenViewbillConfirmed extends Component {
               {!this.props.Transaction.isLoading ?
                 <TouchableOpacity style={[Styles.cardSimpleContainer, {
                   backgroundColor: Color.darkPrimaryColor,
-                  justifyContent: 'flex-start',
+                  justifyContent: 'center',
                   alignItems: 'center',
+                  margin: wp(0.5),
                   height: hp(5),
-                  flexDirection: 'row'
+                  width: '100%',
+                  flexDirection: 'row',
+                  borderRadius: 10
                 }]}
-                  // onPress={this.aksiCallBill}
-                  onPress={this.props.navigation.navigate('SWScreenPay')}
+                  onPress={this.aksiCallBill}
+                // onPress={this.props.navigation.navigate('SWScreenPay')}
                 >
                   <IconOctic name='checklist' color={Color.whiteColor} size={wp(5)} style={{
                     marginHorizontal: wp(2)
@@ -327,7 +334,7 @@ class ScreenViewbillConfirmed extends Component {
                     CALL BILL</Text>
                 </TouchableOpacity>
                 :
-                <ActivityIndicator size={hp(5)}></ActivityIndicator>
+                <ActivityIndicator size={hp(4)}></ActivityIndicator>
               }
             </View>
             : false}

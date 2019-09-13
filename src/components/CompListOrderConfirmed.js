@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { View, Text, TouchableOpacity, Image } from 'react-native'
+import { Button } from 'native-base'
 import { connect } from 'react-redux'
 import {
   widthPercentageToDP as wp,
@@ -58,18 +59,25 @@ class CompListOrderConfirmed extends Component {
               alignItems: 'center'
             }}>
               {this.props.item.status == false ?
-                <TouchableOpacity
+                <Button
                   onPress={this.props.onPressStatus}
+                  style={{
+                    backgroundColor: 'red',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: 8,
+                    width: 50, height: 20
+                  }}
                 >
                   <Text style={[Styles.hurufKonten, {
                     fontSize: 14,
                     fontWeight: '300',
                     flex: 1,
-                    textAlign: 'right',
+                    textAlign: 'center',
                     fontWeight: 'bold',
-                    color: 'red'
+                    color: 'white'
                   }]}>Sent</Text>
-                </TouchableOpacity>
+                </Button>
                 :
                 <View>
                   <Text style={[Styles.hurufKonten, {

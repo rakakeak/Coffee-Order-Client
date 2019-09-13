@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, ActivityIndicator,Text,BackHandler} from 'react-native'
+import { View, ActivityIndicator,Text,BackHandler, Image} from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage';
 import {connect} from 'react-redux'
 
@@ -27,7 +27,8 @@ class StackCheck extends Component {
   render() {
     return (
       <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-        <ActivityIndicator size={50} color="#0000ff" />
+        <ActivityIndicator size={50} color="#0b7f3b" ></ActivityIndicator>
+        <Image source={require('../assets/Icon/kopiloading.png')} style={{height:200, width:200}} />
         <Text style={{
           fontSize: 20,
           fontWeight: 'bold'

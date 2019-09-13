@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import {
   View,
   Text, TouchableOpacity, FlatList, Image, ScrollView,
-  ActivityIndicator, Animated, Easing,
+  ActivityIndicator, Animated, Easing, StatusBar, ImageBackground,
   Dimensions
 } from 'react-native'
 import {
@@ -138,8 +138,11 @@ class ScreenHome extends Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
+        
         {/* Header */}
+        {/* <ImageBackground source={require('../assets/Photo/headerkopi.jpeg')} style={{width: '100%', height:90}}> */}
         <Header hasTabs style={{ backgroundColor: '#f3cea2' }}>
+        <StatusBar backgroundColor='#fcf4e3' barStyle="dark-content" />
           <Left style={{ flex: 1 }}>
             <Text style={{ fontWeight: 'bold', color: '#0a0f14', marginTop: 6, marginLeft: 4 }}>Table :</Text>
             <Text style={{ fontWeight: 'bold', color: '#0a0f14', fontSize: 26 }}> {this.state.noMeja}</Text>
@@ -151,6 +154,7 @@ class ScreenHome extends Component {
             <Text style={{ fontWeight: 'bold', color: '#0a0f14' }}>{this.props.Timer.timerString}</Text>
           </Right>
         </Header>
+        {/* </ImageBackground> */}
 
         {/* List Category */}
         {/* <View style={[Styles.content, {
