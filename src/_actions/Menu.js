@@ -7,6 +7,12 @@ export const getMenu = () => {
     payload : axios.get(`${Constanta.host}/menus`)
   }
 }
+export const reRenderMenu = (data) => {
+  return {
+    type:'RE_RENDER_MENU',
+    payload : data
+  }
+}
 export const getMenuWhereCategory = (categoryId) => {
   return {
     type:'GET_CATEGORY_MENUS',

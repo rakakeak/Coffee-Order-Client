@@ -1,78 +1,212 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { View, Text, TouchableOpacity, FlatList, ActivityIndicator, Image } from 'react-native'
+import { View, Text, TouchableOpacity, FlatList, ActivityIndicator, Image, Alert } from 'react-native'
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+  listenOrientationChange as lor,
+  removeOrientationListener as rol
+} from 'react-native-responsive-screen';
 import AsyncStorage from '@react-native-community/async-storage';
 import IconMaterial from 'react-native-vector-icons/MaterialIcons'
 import IconIon from 'react-native-vector-icons/Ionicons'
+import IconOctic from 'react-native-vector-icons/Octicons'
 
 import { Styles, Color } from '../res/Styles'
 import { getTransaction, editTransaction } from '../_actions/Transaction'
-import { hapusInterval } from '../_actions/Home'
+import { hapusInterval, setIsOrdered, setAnimationOrder } from '../_actions/Home'
+import { addOrderBiasa } from '../_actions/Order'
+import { getMenu } from '..//_actions/Menu'
 import CompListOrder from '../components/CompListOrder'
 import CompOptionBot from '../components/CompOptionBot'
 
 class ScreenViewbill extends Component {
   state = {
     subStateTotal: 0,
-    isAdaBarang: true,
-    isKosongPisan: true,
-    isLoading: true
+    isNotConfirm: false,
+    isAdaBarang: false,
+    dataOrderMenu: [],
+    idTrans: '',
+    dataNow: [],
+    isOrdered: false,
+    idTrans: 0
   }
   aksiCallBill = async () => {
-    // PATCH tbl transaksi berdasarkan ID
-    // Data yg dipatch {Sub_total,discount,serviceCharge,tax,total,isPaid}
-    // Insert tbl transaksi {no_tbl,isPaid=false}, ambil IDTransaksi simpan di Async idTransaction
-    try {
-      let objDataAsli = {
-        ...this.props.Transaction.dataAsli,
-        finishedTime:this.props.Home.timerString
+    let orders = []
+    await this.props.Order.dataItemTmp.map((item, index) => {
+      item.status = false
+      orders.push(item)
+    })
+    await this.props.dispatch(addOrderBiasa(orders))
+    await this.props.navigation.navigate('SWScreenViewbillConfirmed')
+  }
+
+  aksiAddOrder = async (menuId, transactionId = null) => {
+    //Untuk tambah data
+    //Cari data Jika isPaid false , Input Order.
+    //Insert ke dispatch Temp Order
+    transactionId = this.state.idTrans
+    let orders = this.props.Order.dataItemTmp
+    let menus = this.props.Menu.dataItem
+    const indexMenus = menus.findIndex(item => {
+      return (item.id == menuId)
+    })
+    const index = orders.findIndex(item => {
+      return (item.menuId == menuId & item.transactionId == transactionId)
+    })
+    let menuObj = menus[indexMenus]
+    if (index < 0) {
+      let dataTambahTmp = {
+        menuId,
+        transactionId,
+        price: menuObj.price,
+        qty: 1,
+        status: null
       }
-      await clearInterval(this.props.Home.timerEvent)
-      await this.props.dispatch(editTransaction(this.props.Transaction.dataItem.id, objDataAsli))
-      await this.props.navigation.navigate('SWScreenPay')
-    } catch (e) { }
+      await this.props.dispatch(addOrderBiasa([
+        ...this.props.Order.dataItemTmp,
+        dataTambahTmp
+      ]))
+      await this.setState({
+        isOrdered: true,
+        dataNow: dataTambahTmp
+      })
+    } else {
+      let orderTemporer = orders[index]
+      let incQty = orderTemporer.qty + 1
+      let incOrder = {
+        ...orderTemporer,
+        qty: incQty
+      }
+      orders[index] = incOrder
+      await this.props.dispatch(addOrderBiasa(
+        orders
+      ))
+      await this.setState({
+        dataNow: orders[index]
+      })
+    }
+    await this.cekJmlSemuaOrder(transactionId)
+  }
+  aksiRemoveOrder = async (menuId, transactionId = null) => {
+    //Untuk tambah data
+    //Cari data Jika isPaid false , Input Order.
+    //Insert ke dispatch Temp Order
+    transactionId = this.state.idTrans
+    let orders = this.props.Order.dataItemTmp
+    const index = orders.findIndex(item => {
+      return (item.menuId == menuId & item.transactionId == transactionId)
+    })
+    if (index >= 0) {
+      let orderTemporer = orders[index]
+      if (orderTemporer.qty <= 1) {
+        //Splice Index
+        orders.splice(index, 1);
+        await this.setState({
+          dataNow: null,
+          isOrdered: false
+        })
+      } else {
+        let decQty = orderTemporer.qty - 1
+        decOrder = {
+          ...orderTemporer,
+          qty: decQty
+        }
+        orders[index] = decOrder
+        await this.setState({
+          dataNow: orders[index]
+        })
+      }
+      await this.props.dispatch(addOrderBiasa(
+        orders
+      ))
+    }
+    await this.cekJmlSemuaOrder(transactionId)
+  }
+  cekJmlSemuaOrder = (transactionId) => {
+    const dataOrder = this.props.Order.dataItemTmp
+    let bisa = false
+    let jmlKeranjang = 0
+    let jmlHarga = 0
+    dataOrder.map((item, index) => {
+      if (item.transactionId == transactionId & item.status == null) {
+        bisa = true
+        const tmpJmlHarga = item.qty * item.price
+        jmlKeranjang = jmlKeranjang + item.qty
+        jmlHarga = jmlHarga + tmpJmlHarga
+      }
+    })
+    const ObjHomeBottomOption = {
+      isOrdered: bisa,
+      jmlKeranjang: jmlKeranjang,
+      jmlHarga: jmlHarga,
+      estimasiHarga: 15 / 100 * jmlHarga
+    }
+    this.setState({
+      subStateTotal: ObjHomeBottomOption.jmlHarga,
+      isOrdered: ObjHomeBottomOption.isOrdered
+    })
+    this.props.dispatch(setIsOrdered(ObjHomeBottomOption))
+    if (!ObjHomeBottomOption.isOrdered) {
+      this.props.navigation.navigate('ScreenHome')
+    }
   }
   getOrderList = async () => {
     const idTrans = await AsyncStorage.getItem('idTransaction')
-    await this.props.dispatch(getTransaction(idTrans))
-    let tempSubTotal = 0
-    if (!this.props.Transaction.isLoading) {
-      if (this.props.Transaction.dataItem.orders) {
-        this.props.Transaction.dataItem.orders.map((item, index) => {
-          let tmpJumlahHarga = item.price * item.qty
-          tempSubTotal += tmpJumlahHarga
-          if (item.status == null) {
-            this.setState({
-              isAdaBarang: false
-            })
+    await this.setState({
+      idTrans: idTrans
+    })
+    let ordersProps = this.props.Order.dataItemTmp
+    let menusProps = this.props.Menu.dataItem
+    let dataNow = ordersProps
+    let isAdaBarang = false
+    let jmlHargaTotal = 0
+    ordersProps.map((itemOrder, index) => {
+      menusProps.map((itemMenu) => {
+        if (itemOrder.menuId == itemMenu.id) {
+          ordersProps[index] = {
+            ...ordersProps[index],
+            menu: {
+              ...itemMenu
+            }
           }
           this.setState({
-            isKosongPisan: false
+            isOrdered: true
           })
-        })
-      }
-      await this.setState({
-        subStateTotal: tempSubTotal,
-        isLoading: this.props.Transaction.isLoading
+        }
       })
-    }
+      const tmpHarga = itemOrder.qty * itemOrder.price
+      jmlHargaTotal = jmlHargaTotal + tmpHarga
+    })
+    await this.setState({
+      dataOrderMenu: ordersProps,
+      subStateTotal: jmlHargaTotal,
+    })
   }
   componentDidMount() {
+    lor(this)
     this.getOrderList()
+  }
+  componentWillUnmount() {
+    if (!this.state.isOrdered) {
+      this.props.dispatch(setAnimationOrder('out'))
+    }
+    this.props.dispatch(getMenu())
+    rol()
   }
   render() {
     return (
-      <View style={[Styles.container, {
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        padding: 0
-      }]}>
-
-        {!this.state.isKosongPisan & !this.state.isLoading ?
+      this.state.isOrdered ?
+        <View style={[Styles.container, {
+          justifyContent: 'flex-start',
+          alignItems: 'center',
+          padding: wp(2),
+          backgroundColor: '#fcf4e3'
+        }]}>
           <View style={[Styles.content, Styles.cardSimpleContainer, {
-            backgroundColor: '#FCF4E3',
-            width: '100%',
-            height: '100%',
+            backgroundColor: '#fcf4e3',
+            width: wp(100),
+            height: hp(100),
             justifyContent: 'flex-start',
             alignItems: 'center'
           }]}>
@@ -81,21 +215,19 @@ class ScreenViewbill extends Component {
                 style={{ flex: 1, alignSelf: 'flex-start' }}
                 onPress={() => this.props.navigation.navigate('ScreenHome')}
               >
-                <IconIon name='md-arrow-round-back' size={33}></IconIon>
+                <IconIon name='md-arrow-round-back' size={wp(7)}></IconIon>
               </TouchableOpacity>
               <Text style={[Styles.hurufKonten, {
-                fontSize: 20,
+                fontSize: wp(5),
                 fontWeight: 'bold',
                 textAlign: 'center',
-                marginBottom: 5,
+                marginBottom: wp(0.5),
                 flex: 1
               }]}>
                 Billing </Text>
               <Text style={[Styles.hurufKonten, {
-                fontSize: 20,
                 fontWeight: 'bold',
                 textAlign: 'center',
-                marginBottom: 5,
                 flex: 1
               }]}>
               </Text>
@@ -106,83 +238,48 @@ class ScreenViewbill extends Component {
               style={{
                 borderBottomColor: Color.darkPrimaryColor,
                 borderBottomWidth: 2,
-                width: '100%',
-                marginVertical: 5
+                width: wp(95),
+                marginVertical: wp(1.4)
               }}
             />
 
-            {/* List Order */}
-            <View style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              marginBottom: 5
-            }}>
-              <Text style={[Styles.hurufKonten, {
-                fontSize: 16,
-                fontWeight: 'bold',
+            <FlatList
+              data={this.state.dataOrderMenu}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item }) => {
+                return (
+                  <CompListOrder
+                    item={item}
+                    transactionId={this.state.idTrans}
+                    onPressAdd={() => this.aksiAddOrder(item.menuId)}
+                    onPressMin={() => this.aksiRemoveOrder(item.menuId)}
+                  />)
+              }}
+              style={{
                 flex: 1,
-                textAlign: 'left'
-              }]}>Status</Text>
-              <Text style={[Styles.hurufKonten, {
-                fontSize: 16,
-                fontWeight: 'bold',
-                flex: 1,
-                textAlign: 'center'
-              }]}>Name</Text>
-              <Text style={[Styles.hurufKonten, {
-                fontSize: 16,
-                fontWeight: 'bold',
-                flex: 1,
-                textAlign: 'center'
-              }]}>Qty</Text>
-              <Text style={[Styles.hurufKonten, {
-                fontSize: 16,
-                fontWeight: 'bold',
-                flex: 1,
-                textAlign: 'right'
-              }]}>Price</Text>
-            </View>
-
-            {this.state.isLoading ?
-              <ActivityIndicator size={30} style={{ flex: 1 }}></ActivityIndicator>
-              :
-              <FlatList
-                data={this.props.Transaction.dataItem.orders}
-                keyExtractor={(item) => item.id.toString()}
-                style={{
-                  width: '100%',
-                  marginHorizontal: 15
-                }}
-                renderItem={({ item }) => {
-                  return (
-                    <CompListOrder
-                      status={item.status}
-                      qty={item.qty}
-                      name={item.menu.name}
-                      price={item.price}
-                    />
-                  )
-                }}
-              />
-            }
-
+                width: wp(100),
+                paddingHorizontal: wp(1.5)
+              }}
+            />
             {/* Divider */}
             <View
               style={{
                 borderBottomColor: Color.darkPrimaryColor,
-                borderBottomWidth: 2,
-                width: '100%',
-                marginVertical: 5
+                borderBottomWidth: 1,
+                width: wp(95),
+                marginVertical: hp(0.5),
               }}
             />
 
             {/* Option Bawah */}
             <View style={[Styles.cardSimpleContainer, {
-              elevation: 2,
-              height: 150,
+              elevation: 0,
+              height: hp(16.4),
               flexDirection: 'row',
               justifyContent: 'space-between',
-              marginBottom: 5,
+              backgroundColor:'#fcf4e3',
+              borderBottomWidth:1,
+              borderBottomColor: Color.darkPrimaryColor,
             }]}>
               <CompOptionBot subTotal={this.state.subStateTotal} />
             </View>
@@ -191,141 +288,54 @@ class ScreenViewbill extends Component {
             <View style={{
               flexDirection: 'row',
               justifyContent: 'space-between',
-              marginBottom: 15
+              marginBottom: hp(5),
+              marginTop: hp(2)
             }}>
-              {this.state.isAdaBarang ?
-                <TouchableOpacity style={[Styles.cardSimpleContainer, {
-                  backgroundColor: '#0b7f3b',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  padding: 5,
-                  margin: 5,
-                  marginHorizontal:8,
-                  borderRadius:22,
-                  height: '100%',
-                  width:'100%',
-                  flexDirection: 'row'
-                }]}
-                  onPress={() => this.aksiCallBill()}
-                >
-                  <IconMaterial name='payment' size={25} color={Color.whiteColor} style={{
-                    marginHorizontal: 10
-                  }}></IconMaterial>
-                  <Text style={[Styles.hurufKonten, {
-                    fontSize: 15,
-                    fontWeight: 'bold',
-                    textAlign: 'center',
-                    color: Color.whiteColor,
-                    marginRight: 10
-                  }]}>
-                    CALL BILL</Text>
-                </TouchableOpacity>
-                :
-                <TouchableOpacity style={[Styles.cardSimpleContainer, {
-                  backgroundColor: '#0a0f14',
-                  justifyContent: 'flex-start',
-                  alignItems: 'center',
-                  padding: 5,
-                  margin: 5,
-                  height: '100%',
-                  flexDirection: 'row',
-                  borderRadius:24
-                }]}
-                  onPress={() => this.props.navigation.navigate('SWScreenCart')}
-                >
-                  <Text style={[Styles.hurufKonten, {
-                    fontSize: 15,
-                    fontWeight: 'bold',
-                    textAlign: 'center',
-                    color: Color.whiteColor,
-                    width:'100%'
-                  }]}>
-                    CONFIRM FIRST BEFORE CALL BILL
-                </Text>
-                </TouchableOpacity>
-              }
+              <TouchableOpacity style={[Styles.cardSimpleContainer, {
+                backgroundColor: Color.darkPrimaryColor,
+                justifyContent: 'center',
+                alignItems: 'center',
+                margin: wp(0.5),
+                height: hp(5),
+                width: '100%',
+                flexDirection: 'row',
+                borderRadius:10
+              }]}
+                onPress={() =>
+                  Alert.alert(
+                    'Confirm Order',
+                    'Are you sure to order this ?',
+                    [
+                      {
+                        text: 'No',
+                        style: 'cancel',
+                      },
+                      {
+                        text: 'Yes', onPress: () => {
+                          this.aksiCallBill()
+                        }
+                      },
+                    ],
+                    { cancelable: false },
+                  )
+                }
+              >
+                <IconOctic name='checklist' color={Color.whiteColor} size={wp(5)} style={{
+                  marginHorizontal: wp(2)
+                }}></IconOctic>
+                <Text style={[Styles.hurufKonten, {
+                  fontSize: wp(3.5),
+                  fontWeight: 'bold',
+                  textAlign: 'center',
+                  color: Color.whiteColor,
+                  marginRight: wp(1.5)
+                }]}>
+                  CONFIRM</Text>
+              </TouchableOpacity>
             </View>
           </View>
-          :
-          this.state.isLoading ?
-            <View>
-              <ActivityIndicator size={30} style={{ flex: 1 }}></ActivityIndicator>
-            </View>
-            :
-            //Jika Tidak ada Sama sekali Orderan
-            <View style={[Styles.content, Styles.cardSimpleContainer, {
-              backgroundColor: '#fcf4e3',
-              width: '100%',
-              height: '100%',
-              justifyContent: 'flex-start',
-              alignItems: 'center'
-            }]}>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                <TouchableOpacity
-                  style={{ flex: 1, alignSelf: 'flex-start' }}
-                  onPress={() => this.props.navigation.navigate('ScreenHome')}
-                >
-                  <IconIon name='md-arrow-round-back' size={33}></IconIon>
-                </TouchableOpacity>
-                <Text style={[Styles.hurufKonten, {
-                  fontSize: 20,
-                  fontWeight: 'bold',
-                  textAlign: 'center',
-                  marginBottom: 5,
-                  flex: 1
-                }]}>
-                  Billing</Text>
-                <Text style={[Styles.hurufKonten, {
-                  fontSize: 20,
-                  fontWeight: 'bold',
-                  textAlign: 'center',
-                  marginBottom: 5,
-                  flex: 1
-                }]}>
-                </Text>
-              </View>
-
-              {/* Divider */}
-              <View
-                style={{
-                  borderBottomColor: Color.darkPrimaryColor,
-                  borderBottomWidth: 2,
-                  width: '100%',
-                  marginVertical: 5
-                }}
-              />
-              <View style={{
-                flex: 1,
-                width: '100%',
-                justifyContent: 'center',
-                alignItems: 'center'
-              }}>
-                <Image
-                  source={require('../assets/Illustrator/unknown.png')}
-                  style={{
-                    width: '100%',
-                    height: 200,
-                    
-                  }}
-                ></Image>
-                <Text style={[Styles.hurufKonten, {
-                  fontSize: 20,
-                  fontWeight: 'bold',
-                  marginVertical: 10
-                }]}>
-                  Oopps.. There are no items to pay
-              </Text>
-                <Text style={[Styles.hurufKonten, {
-                  fontSize: 17,
-                  fontWeight: 'bold',
-                }]}>
-                  First , Order and then confirm your order
-              </Text>
-              </View>
-            </View>
-
-        }
-      </View>
+        </View >
+        : false
     )
   }
 }
@@ -333,7 +343,8 @@ const mapStateToProps = (state) => {
   return {
     Transaction: state.Transaction,
     Order: state.Order,
-    Home: state.Home
+    Home: state.Home,
+    Menu: state.Menu
   }
 }
 

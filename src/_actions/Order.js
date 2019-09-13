@@ -56,3 +56,15 @@ export const setOrderStatus = (transactionId,dataJadi) => {
     })
   }
 }
+
+export const addOrderBiasa = (data) => {
+  return {
+    type: 'ADD_ORDER_BIASA',
+    payload: data
+  }
+}
+export const hapusAllOrder = () => {
+  return {
+    type: 'REMOVE_ALL_ORDER',
+  }
+}

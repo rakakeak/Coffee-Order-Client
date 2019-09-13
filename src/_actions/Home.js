@@ -1,17 +1,24 @@
-export const setIntervalNya = (timeEvent) => {
-    return {
-      type:'SET_INTERVAL_EVENT',
-      payload : timeEvent
-    }
+export const setIsOrdered = (data) => {
+  /*
+  Tipe Objek ={
+    isOrdered,
+    jmlKeranjang,
+    jmlHarga
   }
-  export const counterNya = (second) => {
-    return {
-      type:'SET_INTERVAL_COUNTER',
-      payload : second+1
-    }
+  */
+  return {
+    type:'SET_ISORDERED',
+    payload:data
   }
-  export const hapusInterval = () => {
-    return {
-      type:'REMOVE_INTERVAL'
-    }
+}
+export const setAnimationOrder = (jenis) => {
+  return {
+    type:'SET_ANIMATION_ORDER',
+    jenis:jenis
   }
+}
+export const clearDataHome = () => {
+  return {
+    type:'CLEAR_DATA_HOME'
+  }
+}

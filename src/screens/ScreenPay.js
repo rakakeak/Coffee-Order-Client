@@ -3,17 +3,25 @@ import { connect } from 'react-redux'
 import { View, Text, TouchableOpacity, FlatList, ActivityIndicator, Image, BackHandler, ScrollView } from 'react-native'
 import IconMaterial from 'react-native-vector-icons/MaterialIcons'
 import IconIon from 'react-native-vector-icons/Ionicons'
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+  listenOrientationChange as lor,
+  removeOrientationListener as rol
+} from 'react-native-responsive-screen';
 
-import { hapusInterval } from '../_actions/Home'
+import { hapusInterval } from '../_actions/Timer'
 import { Styles, Color } from '../res/Styles'
 import AsyncStorage from '@react-native-community/async-storage';
 import { getTransaction, editTransaction } from '../_actions/Transaction'
-import { Button } from 'native-base'
+import { setAnimationOrder, clearDataHome } from '../_actions/Home'
+import { hapusAllOrder } from '../_actions/Order'
 
 class ScreenPay extends Component {
   state = {
     noMeja: 0,
-    idTransaction: 0
+    idTransaction: 0,
+    isLoadingPay: true
   }
   getNoMeja = async () => {
     const idTransaction = await AsyncStorage.getItem('idTransaction')
@@ -27,151 +35,156 @@ class ScreenPay extends Component {
       await BackHandler.exitApp();
       return true;
     });
+    await this.setState({
+      isLoadingPay: false
+    })
   }
   componentDidMount() {
     this.getNoMeja()
   }
   componentWillUnmount() {
     this.props.dispatch(hapusInterval())
+    this.props.dispatch(hapusAllOrder())
+    this.props.dispatch(clearDataHome())
+    this.props.dispatch(setAnimationOrder('out'))
   }
   render() {
     return (
-      <View style={[Styles.container, {
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        
-      }]}>
-        <ScrollView style={{
-          width: '100%'
-        }}>
-          <View style={[Styles.content,{
-            backgroundColor: '#fcf4e3',
-            width: '100%',
-            height: '100%',
-            justifyContent: 'flex-start',
-            alignItems: 'center',
-            flex:1
-          }]}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-              <TouchableOpacity
-                style={{ alignSelf: 'flex-start' }}
-                onPress={() => BackHandler.exitApp()}
-              >
-                <IconIon name='md-arrow-round-back' size={33}></IconIon>
-              </TouchableOpacity>
-              <Text style={[Styles.hurufKonten, {
-                fontSize: 20,
-                fontWeight: 'bold',
-                textAlign: 'center',
-                marginBottom: 5,
-                flex: 1
-              }]}>
-                Payment Session</Text>
-            </View>
-
-            {/* Divider */}
-            <View
-              style={{
-                borderBottomColor: Color.darkPrimaryColor,
-                borderBottomWidth: 2,
-                width: '100%',
-                marginVertical: 5,
-              }}
-            />
-            <View style={{
-              flex: 1,
-              width: '100%',
-              justifyContent: 'center',
+      !this.state.isLoadingPay ?
+        <View style={[Styles.container, {
+          justifyContent: 'flex-start',
+          alignItems: 'center',
+          padding: wp(3.5)
+        }]}>
+          <ScrollView style={{
+            width: wp(100)
+          }}>
+            <View style={[Styles.content, Styles.cardSimpleContainer, {
+              backgroundColor: Color.whiteColor,
+              width: wp(100),
+              height: hp(100),
+              justifyContent: 'flex-start',
               alignItems: 'center'
-            }}>
-              <Image
-                source={require('../assets/Illustrator/receptionist.png')}
+            }]}>
+              <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                <Text style={[Styles.hurufKonten, {
+                  fontSize: wp(4),
+                  fontWeight: 'bold',
+                  textAlign: 'center',
+                  marginBottom: wp(2.5),
+                  flex: 1
+                }]}>
+                  Payment Session</Text>
+              </View>
+
+              {/* Divider */}
+              <View
                 style={{
-                  width: 360,
-                  height: 300
+                  borderBottomColor: Color.darkPrimaryColor,
+                  borderBottomWidth: 2,
+                  width: wp(100),
+                  marginVertical: hp(0.5)
                 }}
-              ></Image>
-              <Text style={[Styles.hurufKonten, {
-                fontSize: 20,
-                fontWeight: 'bold',
-                marginBottom: 10,
-                textAlign:'center'
-              }]}>
-                PLEASE BRING THE PHONE TO THE CASHIER
+              />
+              <View style={{
+                flex: 1,
+                width: wp(100),
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}>
+                <Image
+                  source={require('../assets/Illustrator/receptionist.png')}
+                  style={{
+                    width: wp(20),
+                    height: hp(20)
+                  }}
+                ></Image>
+                <Text style={[Styles.hurufKonten, {
+                  fontSize: wp(4),
+                  fontWeight: 'bold',
+                  marginBottom: wp(3),
+                  textAlign: 'center'
+                }]}>
+                  PLEASE BRING THE IPAD TO THE CASHIER
               </Text>
-              <Text style={[Styles.hurufKonten, {
-                fontSize: 17,
-                fontWeight: 'bold',
-              }]}>
-                TO PROCEED WITH THE PAYMENT
-              </Text>
-
-              <Text style={[Styles.hurufKonten, {
-                fontSize: 30,
-                fontWeight: 'bold',
-                marginTop: 30,
-                marginBottom: 5
-              }]}>
-                # {this.state.noMeja}
-              </Text>
-              <Text style={[Styles.hurufKonten, {
-                fontSize: 17,
-                fontWeight: 'bold',
-                marginBottom: 5
-              }]}>
-                With Transaction ID : {this.state.idTransaction}
-              </Text>
-              <Text style={[Styles.hurufKonten, {
-                fontSize: 17,
-                fontWeight: 'bold',
-                marginBottom: 5
-              }]}>
-                Thank you
-              </Text>
-              {/* <Text style={[Styles.hurufKonten, {
-                fontSize: 17,
-                fontWeight: 'bold',
-                marginBottom: 25,
-                textAlign: 'center'
-              }]}>
-                Press back to clear Internal storage and new transaction
-              </Text> */}
-              <Text style={[Styles.hurufKonten, {
-                fontSize: 16,
-                fontWeight: 'bold',
-              }]}>
-                Time Spent
-              </Text>
-              <Text style={[Styles.hurufKonten, {
-                fontSize: 15,
-                fontWeight: 'bold',
-              }]}>
-                {this.props.Home.timerString}
+                <Text style={[Styles.hurufKonten, {
+                  fontSize: wp(3.5),
+                  fontWeight: 'bold',
+                  textAlign: 'center'
+                }]}>
+                  TO PROCEED WITH THE PAYMENT
               </Text>
 
-              <Button style={{
-                backgroundColor:'#0b7f3b', 
-                marginTop:34, 
-                marginBottom:31, 
-                width:'100%', 
-                justifyContent:'center',
-                borderRadius:24,
-                marginVertical:8}} 
-                onPress={() => this.props.navigation.navigate('ScreenAuth')}
+                <Text style={[Styles.hurufKonten, {
+                  fontSize: wp(5.2),
+                  fontWeight: 'bold',
+                  marginTop: wp(5),
+                  marginBottom: wp(3.5)
+                }]}>
+                  # {this.state.noMeja}
+                </Text>
+                <Text style={[Styles.hurufKonten, {
+                  fontSize: wp(4),
+                  fontWeight: 'bold',
+                  marginBottom: 5
+                }]}>
+                  With Transaction ID : {this.state.idTransaction}
+                </Text>
+                <Text style={[Styles.hurufKonten, {
+                  fontSize: wp(4),
+                  fontWeight: 'bold',
+                  marginBottom: wp(1.5)
+                }]}>
+                  Thank you
+              </Text>
+                <Text style={[Styles.hurufKonten, {
+                  fontSize: wp(4),
+                  fontWeight: 'bold',
+                }]}>
+                  Time Spent
+              </Text>
+                <Text style={[Styles.hurufKonten, {
+                  fontWeight: 'bold',
+                }]}>
+                  {this.props.Timer.timerString}
+                </Text>
+                <TouchableOpacity style={[Styles.cardSimpleContainer, {
+                  backgroundColor: Color.darkPrimaryColor,
+                  width: wp(20),
+                  height: hp(6),
+                  justifyContent: 'center',
+                  padding: wp(3),
+                  marginTop: wp(3)
+                }]}
+                  onPress={() => BackHandler.exitApp()}
                 >
-                <Text style={{color:'white', fontWeight:'bold', fontSize:16}}>Back To Home</Text>
-              </Button>
+                  <Text style={[Styles.hurufKonten, {
+                    textAlign: 'center',
+                    color: Color.whiteColor
+                  }]}> DONE </Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        </ScrollView>
-      </View>
+          </ScrollView>
+        </View>
+        :
+        <ActivityIndicator style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignSelf: 'center'
+        }}
+          size={wp(30)}
+        >
+
+        </ActivityIndicator>
     )
   }
 
 }
 const mapStateToProps = (state) => {
   return {
-    Home: state.Home
+    Home: state.Home,
+    Timer: state.Timer
   }
 }
 export default connect(mapStateToProps)(ScreenPay)
