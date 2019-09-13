@@ -240,7 +240,6 @@ class ScreenViewbillConfirmed extends Component {
             keyExtractor={(item, index) => index.toString()}
             renderItem={({ item }) => {
               return (
-
                 <CompListOrderConfirmed
                   item={item}
                   transactionId={this.state.idTrans}
@@ -254,7 +253,15 @@ class ScreenViewbillConfirmed extends Component {
               paddingHorizontal: wp(1.5)
             }}
           />
+
+
           {/* Divider */}
+          <View style={{ marginHorizontal:8,borderTopWidth: 1, borderBottomWidth: 1, width: '99%', borderColor: '#0b7f3b', marginBottom:3,  paddingHorizontal:6 , paddingVertical:4}}>
+            <Text style={{ fontWeight: 'bold', fontSize:16 }}>Note: </Text>
+            <Text style={{fontSize:14}}>Please Wait Your Drink</Text>
+            <Text style={{fontSize:14}}>Please Click Send if Order Comming and Enjoy</Text>
+          </View>
+
           <View
             style={{
               borderBottomColor: Color.darkPrimaryColor,
@@ -305,7 +312,7 @@ class ScreenViewbillConfirmed extends Component {
                   flexDirection: 'row'
                 }]}
                   // onPress={this.aksiCallBill}
-                onPress={this.props.navigation.navigate('SWScreenPay')}
+                  onPress={this.props.navigation.navigate('SWScreenPay')}
                 >
                   <IconOctic name='checklist' color={Color.whiteColor} size={wp(5)} style={{
                     marginHorizontal: wp(2)

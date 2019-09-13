@@ -68,7 +68,7 @@ class CompListOrderConfirmed extends Component {
                     textAlign: 'right',
                     fontWeight: 'bold',
                     color: 'red'
-                  }]}>Waiting</Text>
+                  }]}>Sent</Text>
                 </TouchableOpacity>
                 :
                 <View>
@@ -79,7 +79,7 @@ class CompListOrderConfirmed extends Component {
                     textAlign: 'right',
                     fontWeight: 'bold',
                     color: '#0b7f3b'
-                  }]}>Success</Text>
+                  }]}>Done</Text>
                 </View>
               }
             </View>

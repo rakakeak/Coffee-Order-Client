@@ -1,5 +1,4 @@
 export default Constant = {
-  // host:'https://kedai-azhari2.herokuapp.com/api/v1'
     host:'http://192.168.43.24:5000/api/v1'
     // host : 'https://coffee-keak.herokuapp.com/api/v1'
   }

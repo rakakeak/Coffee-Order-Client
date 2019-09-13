@@ -19,8 +19,8 @@ import { setIsOrdered } from '../_actions/Home'
 class CompListOrder extends Component {
   render() {
     return (
-      <View style={[Styles.cardSimpleContainer, {
-        backgroundColor: Color.whiteColor,
+      <View style={{
+        backgroundColor: 'transparent',
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
         padding: wp(1.5),
@@ -28,10 +28,10 @@ class CompListOrder extends Component {
         height: hp(12),
         flexDirection: 'row',
         position: 'relative',
-        borderWidth: 2,
-        borderColor: Color.whiteColor,
+        borderWidth: 1,
+        borderColor: '#f3cea2',
         flex: 1
-      }]}>
+      }}>
         <View style={Styles.cardSimpleContainer, [{
           position: 'absolute',
           right: wp(2),
@@ -39,12 +39,13 @@ class CompListOrder extends Component {
           flexDirection: 'row',
           justifyContent: 'center',
           alignItems: 'center',
-          backgroundColor: Color.whiteColor,
+          backgroundColor: 'transparent',
           paddingHorizontal: wp(1.5),
           paddingVertical: wp(1.5),
-          borderRadius: wp(0.5),
+          borderRadius: wp(4),
           width: wp(25),
-          elevation: 2,
+          borderWidth:1,
+          borderColor:'#0b7f3b',
           borderRadius:10,
           flexDirection: 'row'
         }]}>
@@ -86,7 +87,8 @@ class CompListOrder extends Component {
           width: wp(20),
           height:hp(10),
           marginRight: wp(4),
-          borderRadius: wp(2)
+          resizeMode:'stretch'
+          // borderRadius: wp(2)
         }}></Image>
         <View style={{
           flexDirection: 'column',
